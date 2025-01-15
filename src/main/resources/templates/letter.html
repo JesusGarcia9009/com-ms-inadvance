@@ -1,0 +1,370 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style type="text/css">
+		body {
+			margin: 0;
+			font-family: "Arial", Verdana, Helvetica, sans-serif;
+			font-size: 12px;
+		}
+
+		.titulo-seccion {
+			background-color: #d9ebf5;
+			font-weight: bold;
+			width: 100%
+		}
+
+		.datos-seccion table {
+			width: 100%
+		}
+
+		.datos-seccion td {
+			text-align: justify;
+		}
+
+		.key {
+			font-weight: bold;
+			width: 30%
+		}
+
+		@page {
+            margin: 7.6%;
+            size: A4 portrait;
+            @bottom-right {
+                content: element(footer);
+                vertical-align: top;
+                padding-top: 5px;
+            }
+            @top-right {
+                content: element(header);
+                vertical-align: bottom;
+                padding-bottom: 10px;
+            }
+            size: A4 portrait;
+            margin-top:4cm;
+            margin-left:1cm;
+            margin-right:1cm;
+            margin-bottom:2.5cm;
+        }
+
+		div.header {
+			display: block;
+			position: running(header);
+		}
+
+		div.footer {
+			margin-top: 0.5cm;
+			display: block;
+			position: running(footer);
+			border-top: 1px solid #2F528F;
+		}
+
+		div.content {
+			display: block;
+			width: 18.8cm;
+			text-align: justify;
+		}
+
+		#pagenumber:before {
+			content: counter(page);
+		}
+
+		#pagecount:before {
+			content: counter(pages);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			text-indent: 0;
+			font-family: "Arial", Verdana, Helvetica, sans-serif;
+		}
+
+		table,
+		tbody {
+			vertical-align: top;
+			overflow: visible;
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		td {
+			padding: 10px;
+			text-align: center;
+		}
+
+		.s1 {
+			color: black;
+			font-style: normal;
+			font-weight: bold;
+			text-decoration: none;
+			font-size: 14pt;
+		}
+
+		.s2 {
+			color: black;
+			font-style: normal;
+			font-weight: normal;
+			text-decoration: none;
+			font-size: 8pt;
+		}
+
+		.s3 {
+			color: black;
+			font-style: normal;
+			text-decoration: none;
+			font-size: 8pt;
+			text-align: center;
+		}
+
+		h1 {
+			color: #FFF;
+			font-style: normal;
+			font-weight: bold;
+			text-decoration: none;
+			font-size: 10pt;
+		}
+
+		p {
+			color: black;
+			font-style: normal;
+			font-weight: normal;
+			text-decoration: none;
+			font-size: 11pt;
+			margin: 0pt;
+		}
+
+		.detalle-productos {
+			background-color: #2F528F;
+			color: white;
+			width: 35%;
+			font-weight: bold;
+		}
+
+		.table-cel {
+			border-style: solid;
+			border-width: 1pt;
+			border-color: #D9D9D9;
+			padding: 4px;
+		}
+
+		.empty-data {
+			width: 70%;
+		}
+
+		.container {
+			text-align: center
+		}
+
+		.left {
+			float: left;
+		}
+
+		.right {
+			float: right;
+		}
+		.pagebreak {
+            page-break-before: always;
+        }
+        
+	</style>
+</head>
+
+<body>
+	<div class="header">
+		<table style="width: 100%">
+			<tr style="width: 100%">
+				<td class="text-left" style="vertical-align: top;"><img style="width: 400px"
+						src="data:image/png;base64,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" />
+				</td>
+			</tr>
+			<tr style="width: 100%">
+				<td class="text-left" style="vertical-align: top;">
+					<span style="font-size: 22px;">(License N°: <b>MLD1365</b> , NMLS ID: <b>1433994</b>)</span><br />
+					<br />
+					<span style="font-size: 16px;"><b th:utext="${now}">01/19/2021</b>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+	
+	<div class="footer">
+		<br />
+		<br />
+		<p><span id="pagenumber"></span> / <span id="pagecount"></span></p>
+	</div>
+	
+	
+	<div class="content">
+		<table style="width: 100%">
+			<tr style="width: 100%">
+				<td style="vertical-align: top; font-size: x-large; ">
+					<span style="background-color: black;
+    color: white;">Your actual rate, payment, and costs could be higher. <br /> Get an official Loan Estimate
+						before choosing a loan.</span>
+				</td>
+
+			</tr>
+			<tr>
+				<td style="width: 169pt;">
+					<span>DG Pinnacle Funding, DBA DG Pinnacle Home Loans </span><br />
+					<span>782 NW 42nd Avenue </span><br />
+					<span>Suite 450 </span><br />
+					<span>Miami, FL 33126 </span><br />
+					<span>Phone: (305) 851-5225 Fax: (888) 262-0560</span><br />
+					</span><br />
+				</td>
+			</tr>
+		</table>
+		<br />
+		<table>
+			<tr>
+				<td style="border-bottom: 3px solid #2F528F;" class="detalle-productos">REQUALIFICATION LETTER</td>
+				<td style="border-bottom: 3px solid #2F528F;" class="empty-data"></td>
+			</tr>
+		</table>
+		<br />
+		<br />
+		<div class="datos-seccion">
+			<table>
+				<tr>
+					<td class="key">To:</td>
+					<td th:utext="${to}">Sin información
+					</td>
+				</tr>
+				<tr>
+					<td class="key">Address:</td>
+					<td th:utext="${letter.location}">Sin información</td>
+				</tr>
+				<tr>
+					<td class="key">Sales Price:</td>
+					<td th:utext="${letter.price}">Sin información</td>
+				</tr>
+				<tr>
+					<td class="key">Loan Amount:</td>
+					<td th:utext="${letter.loanAmount}">Sin información</td>
+				</tr>
+				<tr>
+					<td class="key">Loan Program:</td>
+					<td th:utext="${letter.loanType}"></td>
+				</tr>
+				<tr>
+					<td class="key">Loan Type:</td>
+					<td th:utext="${letter.loanType}">Sin información</td>
+				</tr>
+
+			</table>
+		</div>
+		<div class="datos-seccion">
+			<table class="tabla" style="width:100%; border-collapse: collapse; font-size:15px; text-align: left;">
+				<tr placeholder="contenido_tabla">
+					<td><span th:utext="${letter.fixDataSubject}">It is with great pride and pleasure that DG Pinnacle
+							Funding, LLC extends to you the pre-approval of your Mortgage Loan. After reviewing your
+							credit report financials, we are able to issue your LOAN PRE-QUALIFICATION with the terms
+							above. </span></td>
+				</tr>
+			</table>
+		</div>
+		<div class="datos-seccion">
+			<table class="tabla" style="width:100%; border-collapse: collapse; font-size:15px; text-align: left;">
+				<tr placeholder="contenido_tabla">
+					<td><span th:utext="${letter.fixDataConditions}">Specific conditions required prior to closing
+							include the following:
+
+							1) Evidence of Hazard Insurance and Flood Insurance (if required).
+
+							2) Satisfactory property appraisal.
+
+							3) Clear title work.
+
+							4) Any other condition as per the underwriter request.
+
+							We understand that financing your home is one of the most important decisions you will make
+							in your lifetime DG Pinnacle Funding, LLC would like to make your experience as delightful
+							as possible.
+
+							Please feel free to call us if you have any questions on the terms and conditions of this
+							approval.
+
+							Thank you for your business. </span></td>
+				</tr>
+			</table>
+		</div>
+		<div class="datos-seccion">
+			<table class="tabla" style="width:100%; border-collapse: collapse; font-size:15px; text-align: left;">
+				<tr placeholder="contenido_tabla">
+					<td><span th:utext="${letter.fixDataFinaltext}">Sincerely,
+							License No: NMLS ID:
+							Phone: </span></td>
+				</tr>
+			</table>
+			
+		</div>
+		<div class="pagebreak"></div>
+		<table style="width: 100%">
+			<tr style="width: 100%">
+				<td class="text-left" style="vertical-align: top;">
+					<span style="font-size: 16px;"><b th:utext="${now}">01/19/2021</b>
+				</td>
+			</tr>
+		</table>
+		<div class="datos-seccion">
+			<table class="tabla" style="width:100%; border-collapse: collapse; font-size:15px; text-align: left;">
+				<tr placeholder="contenido_tabla">
+					<td>
+						<span><b>Dear </b></span>
+					</td>
+				</tr>
+				<tr placeholder="contenido_tabla">
+					<td>
+						<span>
+							Thank you for considering our buyer’s offer. We want you to know that we all share a 
+							common goal; Close this transaction ON TIME and communicate effectively. 
+						</span>
+					</td>
+				</tr>	
+				<tr placeholder="contenido_tabla">	
+					<td>
+						<span>
+							Here are some of the reasons why you and your client should consider working with 
+							DG Pinnacle Home Loans 
+						</span>
+					</td>
+				</tr>	
+				<tr placeholder="contenido_tabla">	
+					<td>
+						<ul>
+						  <li>&#8226; Transparent & effective communication/from start to finish.</li>
+						  <li>&#8226; Designated Appraisal Panel</li>
+						  <li>&#8226; In-house Processing & Underwriting</li>
+						  <li>&#8226; 7-day inspection or less</li>
+						  <li>&#8226; 10-day appraisal or less</li>
+						  <li>&#8226; 30-day loan commitment or less</li>
+						  <li>&#8226; 45-day closing or less</li>
+						</ul>
+					</td>
+				</tr>	
+				<tr placeholder="contenido_tabla">	
+					<td>
+						<span>
+							<b>Thank you for the opportunity to work together. </b>
+						</span>
+					</td>
+				</tr>	
+				<tr placeholder="contenido_tabla">	
+					<td>
+						<span>
+							Call Us, DG Pinnacle team can Help you! 
+						</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+
+</body>
+
+</html>
